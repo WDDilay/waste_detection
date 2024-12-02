@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Recognition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        #container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #333333;
+        }
+
+        #cameraWrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+            display: block;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px auto;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #detectButton {
+            display: block;
+            margin: 20px auto;
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Image Recognition</h1>
+
+        <!-- Camera Section -->
+        <div id="cameraWrapper">
+            <video id="camera" autoplay></video>
+            <button id="capture">Capture Image</button>
+            <canvas id="canvas" style="display: none;"></canvas>
+        </div>
+
+        <!-- Upload Section -->
+        <h2>Upload an Image</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput" accept="image/*" />
+        </form>
+
+        <!-- Detect Button -->
+        <button id="detectButton">Detect</button>
+    </div>
+
+    <script>
+        const camera = document.getElementById("camera");
+        const canvas = document.getElementById("canvas");
+        const captureButton = document.getElementById("capture");
+        const detectButton = document.getElementById("detectButton");
+        const fileInput = document.getElementById("fileInput");
+
+        // Initialize camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                camera.srcObject = stream;
+            })
+            .catch((err) => console.error("Camera access denied:", err));
+
+        // Capture image
+        captureButton.addEventListener("click", () => {
+            const context = canvas.getContext("2d");
+            canvas.width = camera.videoWidth;
+            canvas.height = camera.videoHeight;
+            context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+            alert("Image captured from camera!");
+        });
+
+        // Detect button functionality
+        detectButton.addEventListener("click", () => {
+            if (fileInput.files.length > 0) {
+                alert("Detecting from uploaded image...");
+            } else if (canvas.width > 0) {
+                alert("Detecting from captured image...");
+            } else {
+                alert("Please upload or capture an image first!");
+            }
+        });
+    </script>
+</body>
+</html>
